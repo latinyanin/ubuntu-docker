@@ -14,7 +14,13 @@ RUN apt-get install -y \
     nano \
     sudo \
     bash-completion \
-    iputils-ping
+    iputils-ping \
+    software-properties-common \
+    rsyslog \
+    && apt-get clean \
+    && rm -Rf /usr/share/doc && rm -Rf /usr/share/man \
+    && rm -rf /var/lib/apt/lists/* \
+
 
 # Set up the server name
 ARG SERVER_NAME=ubuntu
@@ -44,11 +50,11 @@ CMD ["/usr/sbin/sshd", "-D"]
 ARG USER_UID=1000
 ARG USER_GID=1000
 ARG USER_NAME=user
-RUN useradd -ms /bin/bash ${USER_NAME};
-RUN groupmod --gid ${USER_GID} ${USER_NAME};
-RUN usermod --uid ${USER_UID} --gid ${USER_GID} ${USER_NAME};
-RUN echo ${USER_NAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USER_NAME};
-RUN chmod 0440 /etc/sudoers.d/${USER_NAME};
-RUN mkdir /home/${USER_NAME}/.ssh
-RUN curl https://github.com/${USER_NAME}.keys | tee -a /home/${USER_NAME}/.ssh/authorized_keys
-RUN chown -R ${USER_NAME}:${USER_NAME} /home/${USER_NAME}/
+RUN useradd -ms /bin/bash ${USER_NAME} \
+    groupmod --gid ${USER_GID} ${USER_NAME}\
+    usermod --uid ${USER_UID} --gid ${USER_GID} ${USER_NAME} \
+    echo ${USER_NAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USER_NAME} \
+    chmod 0440 /etc/sudoers.d/${USER_NAME} \
+    mkdir /home/${USER_NAME}/.ssh \
+    curl https://github.com/${USER_NAME}.keys | tee -a /home/${USER_NAME}/.ssh/authorized_keys \
+    chown -R ${USER_NAME}:${USER_NAME} /home/${USER_NAME}/
