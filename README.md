@@ -1,4 +1,4 @@
-# Ubuntu Docker demo
+# Ubuntu Docker
 
 ## Requirements
 
